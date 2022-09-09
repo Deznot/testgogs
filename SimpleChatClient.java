@@ -34,6 +34,9 @@ public class SimpleChatClient {
         mainPanel.add(sendButton);
         setUpNetworking();
         
+        Thread readerThread = new Thread(new IncomingReader()); //create the Thread and give it task
+        readerThread.start();
+
         frame.getContentPane().add(BorderLayout.CENTER,mainPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(400,500);
@@ -63,6 +66,21 @@ public class SimpleChatClient {
             }
             outgoing.setText("");
             outgoing.requestFocus();
+        }
+    }
+
+    public class IncomingReader implements Runnable{
+        //reading a line at a time and adding each line to the scrolling text area
+        public void run() {
+            String message;
+            try {
+                while ((message = reader.readLine()) != null) {
+                    System.out.println("read" + message);
+                    incoming.append(message + "\n");
+                }
+            }catch(Exception ex) {
+                ex.printStackTrace();
+            }
         }
     }
 }
