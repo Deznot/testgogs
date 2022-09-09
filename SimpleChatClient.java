@@ -32,11 +32,24 @@ public class SimpleChatClient {
         mainPanel.add(qScroller);
         mainPanel.add(outgoing);
         mainPanel.add(sendButton);
-        //setUpNetworking(); method for work with network
+        setUpNetworking();
         
         frame.getContentPane().add(BorderLayout.CENTER,mainPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(400,500);
         frame.setVisible(true);
     }   
+
+    private void setUpNetworking() {
+        //method for work with network
+        try {
+            socket = new Socket("127.0.0.1", 5000);
+            InputStreamReader streamReader = new InputStreamReader(socket.getInputStream());
+            reader = new BufferedReader(streamReader);
+            writer = new PrintWriter(socket.getOutputStream());
+            System.out.println("Networking established");
+        }catch(IOException ex) {
+            ex.printStackTrace();
+        }
+    }
 }
