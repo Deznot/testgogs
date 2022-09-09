@@ -28,7 +28,7 @@ public class SimpleChatClient {
         qScroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         outgoing = new JTextField(20);
         JButton sendButton = new JButton("Send");
-        //sendButton.addActionListener(); add method click handler 
+        sendButton.addActionListener(new SendButtonListener());
         mainPanel.add(qScroller);
         mainPanel.add(outgoing);
         mainPanel.add(sendButton);
@@ -50,6 +50,19 @@ public class SimpleChatClient {
             System.out.println("Networking established");
         }catch(IOException ex) {
             ex.printStackTrace();
+        }
+    }
+
+    public class SendButtonListener implements ActionListener {
+        public void actionPerformed(ActionEvent ev) {
+            try {
+                writer.println(outgoing.getText());
+                writer.flush();
+            }catch(Exception ex) {
+                ex.printStackTrace();
+            }
+            outgoing.setText("");
+            outgoing.requestFocus();
         }
     }
 }
