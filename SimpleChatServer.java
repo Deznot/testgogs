@@ -51,4 +51,18 @@ public class SimpleChatServer {
             ex.printStackTrace();
         }
     }
+
+    public void tellEveryone(String message) {
+        Iterator it = clientOutputStreams.iterator(); //create iterator for ClientOutputStreams
+        while(it.hasNext()) {
+            //while the collection has next elements do
+            try {
+              PrintWriter writer = (PrintWriter) it.next();
+              writer.println(message);
+              writer.flush();  
+            }catch(Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
 }
