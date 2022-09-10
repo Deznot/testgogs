@@ -5,6 +5,30 @@ import java.util.*;
 public class SimpleChatServer {
     ArrayList<PrintWriter> clientOutputStreams; //List for store client message
 
+    public class ClientHandler implements Runnable {
+        BufferedReader reader;
+        Socket sock;
+
+        public ClientHandler(Socket clientSocket) {
+            //it's a class constructor.
+            try {
+                sock = clientSocket; // set current socket to sock
+                InputStreamReader isReader = new InputStreamReader(sock.getInputStream()); // create bridje between byte stream and chars
+                reader =  new BufferedReader(isReader); // read the chars
+            }catch(Exception ex) {ex.printStackTrace();}
+        }
+
+        public void run() {
+            String message;
+            try {
+                while ((message = reader.readLine()) != null) {
+                    //while the value of reader isn't null we do circle
+                    System.out.println("read " + message);
+                    tellEveryone(message);// send message for everyone
+                }
+            }catch(Exception ex) {ex.printStackTrace();}
+        }
+    }
     public static void main(String[] args) {
         new SimpleChatServer().go();
     }
@@ -19,7 +43,7 @@ public class SimpleChatServer {
                 PrintWriter writer = new PrintWriter(clientSocket.getOutputStream());//create bridje byte stream and chars after this we can write strings to socket
                 clientOutputStreams.add(writer); //add writer for current socket to List
 
-                Thread t = new Thread(new ClientHandler(clientSocket)); // need to add task for Thread
+                Thread t = new Thread(new ClientHandler(clientSocket));
                 t.start();
                 System.out.println("got a connection");
             }
